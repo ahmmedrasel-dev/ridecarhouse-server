@@ -28,6 +28,13 @@ async function run() {
       res.send(result);
     })
 
+    app.post('/add-car', async (req, res) => {
+      const carItem = req.body;
+      const result = await carCollection.insertOne(carItem);
+      res.send({ success: true, message: 'Data Inserted!' })
+
+    })
+
   }
   finally {
     // await client.close();
