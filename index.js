@@ -29,8 +29,14 @@ async function run() {
     })
 
     app.post('/add-car', async (req, res) => {
-      const carItem = req.body;
-      const result = await carCollection.insertOne(carItem);
+      const car = req.body;
+
+      console.log(car.car_name)
+      if (!car.car_name || !car.picture || !car.price && !car.quantity || !car.suplier || !car.brand || !car.product_details) {
+        return res.send({ success: false, error: "Plese Provide All Information." });
+      }
+
+      await carCollection.insertOne(car);
       res.send({ success: true, message: 'Data Inserted!' })
 
     })
