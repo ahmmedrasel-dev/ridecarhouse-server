@@ -35,6 +35,11 @@ async function run() {
 
     })
 
+    app.delete('/car/:id', async (req, res) => {
+      const id = req.params.id
+      console.log(id);
+    })
+
   }
   finally {
     // await client.close();
