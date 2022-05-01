@@ -50,6 +50,14 @@ async function run() {
       res.send(car);
     })
 
+    // Single Idividual APi
+    app.get('/myitems', async (req, res) => {
+      const email = req.query;
+      const cursor = carCollection.find(email);
+      const car = await cursor.toArray()
+      res.send(car);
+    })
+
     app.delete('/car/:id', async (req, res) => {
       const id = req.params.id
       console.log(id);
