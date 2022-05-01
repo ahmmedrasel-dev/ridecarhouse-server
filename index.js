@@ -52,8 +52,9 @@ async function run() {
 
     // Single Idividual APi
     app.get('/myitems', async (req, res) => {
-      const email = req.query;
-      const cursor = carCollection.find(email);
+      const email = req.query.email;
+      const query = { email: email }
+      const cursor = carCollection.find(query);
       const car = await cursor.toArray()
       res.send(car);
     })
