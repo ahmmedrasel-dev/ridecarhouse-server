@@ -5,6 +5,7 @@ require('dotenv').config()
 const port = process.env.PORT || 5000
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const { query } = require('express');
+const jwt = require('jsonwebtoken');
 
 
 // Middleware.
@@ -21,6 +22,22 @@ async function run() {
   try {
     await client.connect();
     const carCollection = client.db('ride_car_house').collection('car');
+
+    // Auth JSON Token.
+    app.post('/login', (req, res) => {
+      const user = req.body;
+      const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRATE, {
+        expiresIn: '1d'
+      });
+      res.send(accessToken)
+    })
+
+    function verifyJWT(req, res, next) {
+      const authHeaders = req.headers.authorization;
+      if (!authHeaders) {
+        return res.status(401).send({ message: 'Unauthorization Access' })
+      }
+    }
 
     app.get('/car', async (req, res) => {
       const query = {};
@@ -51,7 +68,7 @@ async function run() {
     })
 
     // Single Idividual APi
-    app.get('/myitems', async (req, res) => {
+    app.get('/myitems', verifyJWT, async (req, res) => {
       const email = req.query.email;
       const query = { email: email }
       const cursor = carCollection.find(query);
