@@ -37,6 +37,15 @@ async function run() {
       if (!authHeaders) {
         return res.status(401).send({ message: 'Unauthorization Access' })
       }
+
+      const token = authHeaders.split(' ')[1];
+      jwt.verify(token, process.env.ACCESS_TOKEN_SECRATE, (err, decode) => {
+        if (err) {
+          return res.status(403).send({ message: 'Forbidden Access.' })
+        }
+        req.decode = decode
+        next()
+      })
     }
 
     app.get('/car', async (req, res) => {
@@ -69,11 +78,18 @@ async function run() {
 
     // Single Idividual APi
     app.get('/myitems', verifyJWT, async (req, res) => {
+      const decodedEmail = req.decode.email;
       const email = req.query.email;
-      const query = { email: email }
-      const cursor = carCollection.find(query);
-      const car = await cursor.toArray()
-      res.send(car);
+      if (email == decodedEmail) {
+        const query = { email: email }
+        const cursor = carCollection.find(query);
+        const car = await cursor.toArray()
+        res.send(car);
+      }
+      else {
+        res.status(403).send({ message: 'Forbidden Access.' })
+      }
+
     })
 
     app.delete('/car/:id', async (req, res) => {
