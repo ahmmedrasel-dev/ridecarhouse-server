@@ -92,6 +92,21 @@ async function run() {
 
     })
 
+    // Update Delivery Quanity.
+    app.put('/delivered/:id', async (req, res) => {
+      const id = req.params.id;
+      const quantity = req.body;
+      const filter = { _id: ObjectId(id) }
+      const options = { upset: true }
+      const updateQuanity = {
+        $set: {
+          quantity: quantity.newQuanity
+        }
+      };
+      const result = carCollection.updateOne(filter, updateQuanity, options);
+      res.send(result)
+    })
+
     // Delete Single Item.
     app.delete('/car/:id', async (req, res) => {
       const id = req.params.id
