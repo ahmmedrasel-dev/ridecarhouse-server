@@ -101,16 +101,15 @@ async function run() {
         return res.send({ message: 'Please write your quanity.' })
       }
       const filter = { _id: ObjectId(id) };
-      const newQty = await (oldqunaity + qty)
+      const newQty = oldqunaity + qty
       const options = { upset: true }
       const updateQuanity = {
         $set: {
           quantity: newQty
         }
       };
-      await carCollection.updateOne(filter, updateQuanity, options);
-      res.send({ success: true, message: 'Data Inserted!' })
-
+      const result = carCollection.updateOne(filter, updateQuanity, options);
+      res.send(result)
     })
 
     // Update Delivery Quanity.
@@ -124,8 +123,8 @@ async function run() {
           quantity: quantity.newQuanity
         }
       };
-      await carCollection.updateOne(filter, updateQuanity, options);
-      res.send({ message: 'Qauntiy Added Successfully.' })
+      const result = carCollection.updateOne(filter, updateQuanity, options);
+      res.send(result)
     })
 
     // Delete Single Item.
