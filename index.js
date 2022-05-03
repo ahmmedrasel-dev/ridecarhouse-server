@@ -68,7 +68,7 @@ async function run() {
 
     })
 
-    // Single Car APi
+    // Single Car API
     app.get('/car/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
@@ -92,6 +92,27 @@ async function run() {
 
     })
 
+    // Add Quantity API;
+    app.put('/add-quanity/:id', async (req, res) => {
+      const id = req.params.id;
+      const oldqunaity = parseInt(req.query.qty);
+      const qty = parseInt(req.body.quantity);
+      if (!qty) {
+        return res.send({ message: 'Please write your quanity.' })
+      }
+      const filter = { _id: ObjectId(id) };
+      const newQty = await (oldqunaity + qty)
+      const options = { upset: true }
+      const updateQuanity = {
+        $set: {
+          quantity: newQty
+        }
+      };
+      await carCollection.updateOne(filter, updateQuanity, options);
+      res.send({ success: true, message: 'Data Inserted!' })
+
+    })
+
     // Update Delivery Quanity.
     app.put('/delivered/:id', async (req, res) => {
       const id = req.params.id;
@@ -103,8 +124,8 @@ async function run() {
           quantity: quantity.newQuanity
         }
       };
-      const result = carCollection.updateOne(filter, updateQuanity, options);
-      res.send(result)
+      await carCollection.updateOne(filter, updateQuanity, options);
+      res.send({ message: 'Qauntiy Added Successfully.' })
     })
 
     // Delete Single Item.
