@@ -95,19 +95,19 @@ async function run() {
     // Add Quantity API;
     app.put('/add-quanity/:id', async (req, res) => {
       const id = req.params.id;
-      const oldqunaity = parseInt(req.query.qty);
+      const oldQty = parseInt(req.query.oldQty)
       const qty = parseInt(req.body.quantity);
+      const total = (oldQty + qty)
       const filter = { _id: ObjectId(id) };
-
-      const newQty = oldqunaity + qty
+      // console.log(total)
       const options = { upset: true }
       const updateQuanity = {
         $set: {
-          quantity: newQty
+          quantity: total
         }
       };
-      const result = carCollection.updateOne(filter, updateQuanity, options);
-      res.send(result)
+      await carCollection.updateOne(filter, updateQuanity, options);
+      res.send({ message: 'Qauntity Added.' })
     })
 
     // Update Delivery Quanity.
