@@ -95,7 +95,7 @@ async function run() {
     // Add Quantity API;
     app.put('/add-quanity/:id', async (req, res) => {
       const id = req.params.id;
-      const qty = parseInt(req.body.quantity);
+      const qty = req.body.quantity;
       const filter = { _id: ObjectId(id) };
       const options = { upset: true }
       const updateQuanity = {
