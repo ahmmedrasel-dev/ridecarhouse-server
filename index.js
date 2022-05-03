@@ -99,7 +99,7 @@ async function run() {
       const qty = parseInt(req.body.quantity);
       const total = (oldQty + qty)
       const filter = { _id: ObjectId(id) };
-      // console.log(total)
+      console.log(total)
       const options = { upset: true }
       const updateQuanity = {
         $set: {
