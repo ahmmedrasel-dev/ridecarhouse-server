@@ -97,9 +97,6 @@ async function run() {
       const id = req.params.id;
       const oldqunaity = parseInt(req.query.qty);
       const qty = parseInt(req.body.quantity);
-      if (!qty) {
-        return res.send({ message: 'Please write your quanity.' })
-      }
       const filter = { _id: ObjectId(id) };
 
       const newQty = oldqunaity + qty
