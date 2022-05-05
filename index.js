@@ -22,6 +22,7 @@ async function run() {
   try {
     await client.connect();
     const carCollection = client.db('ride_car_house').collection('car');
+    const agendCollection = client.db('ride_car_house').collection('agend')
 
     // Auth JSON Token.
     app.post('/login', (req, res) => {
@@ -30,6 +31,13 @@ async function run() {
         expiresIn: '1d'
       });
       res.send(accessToken)
+    })
+
+    app.get('/agends', async (req, res) => {
+      const query = {};
+      const coursor = agendCollection.find(query);
+      const result = await coursor.toArray();
+      res.send(result)
     })
 
     function verifyJWT(req, res, next) {
@@ -95,6 +103,7 @@ async function run() {
     // Add Quantity API;
     app.put('/add-quanity/:id', async (req, res) => {
       const id = req.params.id;
+      console.log(id)
       const oldQty = parseInt(req.query.oldQty)
       const qty = parseInt(req.body.quantity);
       const total = (oldQty + qty)
@@ -106,7 +115,7 @@ async function run() {
           quantity: total
         }
       };
-      await carCollection.updateOne(filter, updateQuanity, options);
+      const result = await carCollection.updateOne(filter, updateQuanity, options);
       res.send({ message: 'Qauntity Added.' })
     })
 
@@ -121,7 +130,7 @@ async function run() {
           quantity: quantity.newQuanity
         }
       };
-      const result = carCollection.updateOne(filter, updateQuanity, options);
+      const result = await carCollection.updateOne(filter, updateQuanity, options);
       res.send(result)
     })
 
