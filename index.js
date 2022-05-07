@@ -56,12 +56,26 @@ async function run() {
       })
     }
 
+    app.get('/car-pages', async (req, res) => {
+      const count = await carCollection.estimatedDocumentCount();
+      res.send({ count });
+    })
+
+
     app.get('/car', async (req, res) => {
+      const page = parseInt(req.query.page);
+      const size = parseInt(req.query.pageSize);
       const query = {};
       const cursor = carCollection.find(query);
-      const result = await cursor.toArray();
-      res.send(result);
+      let product;
+      if (page || size) {
+        product = await cursor.skip(page * size).limit(size).toArray();
+      } else {
+        product = await cursor.toArray();
+      }
+      res.send(product);
     })
+
 
     // Add car in databse api.
     app.post('/add-car', async (req, res) => {
@@ -103,12 +117,10 @@ async function run() {
     // Add Quantity API;
     app.put('/add-quanity/:id', async (req, res) => {
       const id = req.params.id;
-      console.log(id)
       const oldQty = parseInt(req.query.oldQty)
       const qty = parseInt(req.body.quantity);
       const total = (oldQty + qty)
       const filter = { _id: ObjectId(id) };
-      console.log(total)
       const options = { upset: true }
       const updateQuanity = {
         $set: {
